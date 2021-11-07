@@ -10,6 +10,7 @@ export default function App() {
     { text: 'play on the switch', key: '3' }
   ]);
 
+  // funkcja do usuwania zadan
   const pressHandler = (key) => {
     setTodos(prevTodos => {
       return prevTodos.filter(todo => todo.key != key);
