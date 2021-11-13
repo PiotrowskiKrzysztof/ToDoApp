@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
-import Header from './components/header' // importujemy Header z osobnego pliku
+import Header from './components/header' // importujemy Header z komponentów
 import TodoItem from './components/todoItem'; // import TodoItem z komponentow
+import AddTodo from './components/addTodo'; // importujemy AddTodo z komponentów
 
 export default function App() {
   const [todos, setTodos] = useState([  // tablica reprezentująca poszczególne elementy ToDo
@@ -17,11 +18,21 @@ export default function App() {
     });
   };
 
+  // funkcja obslugujaca przycisk zatwierdzajacy utworzenie nowego Todo na liscie
+  const submitHandler = (text) => {
+    setTodos((prevTodos) => {
+      return [
+        { text: text, key: Math.random().toString() },
+        ...prevTodos
+      ];
+    })
+  }
+
   return (
     <View style={styles.container}>
       <Header /> 
       <View style={styles.content}>
-        {/* to form */} 
+        <AddTodo submitHandler={submitHandler}/> 
         <View style={styles.list}>
           <FlatList 
             data={todos}
