@@ -4,12 +4,10 @@ import Header from './components/header' // importujemy Header z komponentów
 import TodoItem from './components/todoItem'; // import TodoItem z komponentow
 import AddTodo from './components/addTodo'; // importujemy AddTodo z komponentów
 
+
 export default function App() {
-  const [todos, setTodos] = useState([  // tablica reprezentująca poszczególne elementy ToDo
-    { text: 'buy coffee', key: '1' }, 
-    { text: 'create an app', key: '2' },
-    { text: 'play on the switch', key: '3' }
-  ]);
+  const customData = require('./dataTodos.json'); // dane do wyswietlania
+  const [todos, setTodos] = useState(customData);
 
   // funkcja do usuwania zadan
   const pressHandler = (key) => {
