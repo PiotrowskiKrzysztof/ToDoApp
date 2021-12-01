@@ -3,16 +3,28 @@ import { StyleSheet, Text, View, FlatList, Alert, TouchableWithoutFeedback, Keyb
 import Header from './components/header' // importujemy Header z komponentów
 import TodoItem from './components/todoItem'; // import TodoItem z komponentow
 import AddTodo from './components/addTodo'; // importujemy AddTodo z komponentów
+import * as RNFS from 'react-native-fs'; // fie system do obsługi pliku json z danymi
 
 
 export default function App() {
-  const customData = require('./dataTodos.json'); // dane do wyswietlania
-  const [todos, setTodos] = useState(customData);
+  
+  const [todos, setTodos] = useState();
+  
+  var pathDataJSON = RNFS.DocumentDirectoryPath + '/dataTodos.json'; // sciezka do pliku z JSONem
 
-  // funkcja do usuwania zadan
+  //funkcja do przechwytywania danych z pliku
+  const takeData = async () => {        
+    var data = await RNFS.readFile(pathDataJSON, 'ascii');
+    setTodos(JSON.parse(data));
+  }
+  takeData();
+
+  // funkcja do usuwania Todos
   const pressHandler = (key) => {
     setTodos(prevTodos => {
       return prevTodos.filter(todo => todo.key != key);
+      // let tmpData = prevTodos.filter(todo => todo.key != key);
+      // RNFS.writeFile(pathDataJSON, JSON.stringify(tmpData) , 'ascii');
     });
   };
 
@@ -20,10 +32,10 @@ export default function App() {
   const submitHandler = (text) => {    
     if(text.length > 3) {
       setTodos((prevTodos) => {
-        return [
-          { text: text, key: Math.random().toString() },
-          ...prevTodos
-        ];
+          let tmpData = [ { text: text, key: Math.random().toString() } ,...prevTodos ];
+          // console.log(tmpData);
+          // const tmp = '[{"text": "buy coffee","key": "1"},{"text": "create an app","key": "2"},{"text": "play on the switch","key": "3"},{"text": "MEGAKOT21","key": "4"}]';          
+          RNFS.writeFile(pathDataJSON, JSON.stringify(tmpData) , 'ascii');
       })
     } else {
       // Alert obsługujący zbyt krótkie Todo
@@ -61,9 +73,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', // kolor tła: biel
   },
   content: {
+    flex: 1,
     padding: 40,
   },
   list: {
+    flex: 1,
     marginTop: 20,
   }
 });
