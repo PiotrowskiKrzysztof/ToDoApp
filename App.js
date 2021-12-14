@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, FlatList, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Header from './components/header' // importujemy Header z komponentów
 import TodoItem from './components/todoItem'; // import TodoItem z komponentow
@@ -8,25 +8,42 @@ import * as RNFS from 'react-native-fs'; // fie system do obsługi pliku json z 
 
 export default function App() {
   
-  const [todos, setTodos] = useState();
+  const [todos, setTodos] = useState();  
   
   var pathDataJSON = RNFS.DocumentDirectoryPath + '/dataTodos.json'; // sciezka do pliku z JSONem
+
+  // RNFS.unlink(pathDataJSON)
+  // .then(() => {
+  //   console.log('FILE DELETED');    
+  // })
+  // const tmpp = '[{"text": "buy coffee","key": "1"},{"text": "create an app","key": "2"},{"text": "play on the switch","key": "3"},{"text": "MEGAKOT21","key": "4"}]';          
+  // RNFS.writeFile(pathDataJSON, tmpp , 'ascii');
 
   //funkcja do przechwytywania danych z pliku
   const takeData = async () => {        
     var data = await RNFS.readFile(pathDataJSON, 'ascii');
+    console.log(data);
     setTodos(JSON.parse(data));
   }
-  takeData();
+  // takeData();
+
+  useEffect(() => {
+    takeData();
+  }, [todos]);
 
   // funkcja do usuwania Todos
   const pressHandler = (key) => {
     setTodos(prevTodos => {
-      return prevTodos.filter(todo => todo.key != key);
-      // let tmpData = prevTodos.filter(todo => todo.key != key);
-      // RNFS.writeFile(pathDataJSON, JSON.stringify(tmpData) , 'ascii');
+      // return prevTodos.filter(todo => todo.key != key);
+      let tmpData = prevTodos.filter(todo => todo.key != key);
+      console.log(JSON.stringify(tmpData));
+      // RNFS.writeFile(pathDataJSON, JSON.stringify(tmpData), 'ascii');
     });
   };
+
+  const showInfo = () => {
+    
+  }
 
   // funkcja obslugujaca przycisk zatwierdzajacy utworzenie nowego Todo na liscie
   const submitHandler = (text) => {    
@@ -53,11 +70,11 @@ export default function App() {
         <Header /> 
         <View style={styles.content}>
           <AddTodo submitHandler={submitHandler}/> 
-          <View style={styles.list}>
+          <View style={styles.list}>            
             <FlatList 
               data={todos}
               renderItem={({ item }) => (
-                <TodoItem item={item} pressHandler={pressHandler}/>              
+                <TodoItem item={item} />              
               )}
             />
           </View>
