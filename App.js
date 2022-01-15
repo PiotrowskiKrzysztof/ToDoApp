@@ -16,28 +16,38 @@ export default function App() {
   // .then(() => {
   //   console.log('FILE DELETED');    
   // })
-  // const tmpp = '[{"text": "buy coffee","key": "1"},{"text": "create an app","key": "2"},{"text": "play on the switch","key": "3"},{"text": "MEGAKOT21","key": "4"}]';          
+  // const tmpp = '[{"text": "buy coffee","key": "1", "dateData": {"date": "15", "month": "1", "year": "2022"}, "img": {"path": "empty"}},{"text": "create an app","key": "2", "dateData": {"date": "15", "month": "1", "year": "2022"}, "img": {"path": "empty"}},{"text": "play on the switch","key": "3", "dateData": {"date": "15", "month": "1", "year": "2022"}, "img": {"path": "empty"}},{"text": "MEGAKOT21","key": "4", "dateData": {"date": "15", "month": "1", "year": "2022"}, "img": {"path": "empty"}}]';          
   // RNFS.writeFile(pathDataJSON, tmpp , 'ascii');
 
   //funkcja do przechwytywania danych z pliku
   const takeData = async () => {        
     var data = await RNFS.readFile(pathDataJSON, 'ascii');
-    console.log(data);
+    // console.log(data);
     setTodos(JSON.parse(data));
   }
-  // takeData();
+  takeData();
 
-  useEffect(() => {
-    takeData();
-  }, [todos]);
+  // useEffect(() => {
+  //   // console.log( "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + pathDataJSON);
+  //   takeData();
+  // }, [todos]);
 
   // funkcja do usuwania Todos
   const pressHandler = (key) => {
     setTodos(prevTodos => {
       // return prevTodos.filter(todo => todo.key != key);
       let tmpData = prevTodos.filter(todo => todo.key != key);
+      // console.log("/////////////////todos//////////////////")
+      // console.log(todos);
+      console.log("/////////////////tmpData//////////////////")
+      console.log(tmpData);
+      console.log("/////////////////tmpData STRINGLIFY//////////////////")
       console.log(JSON.stringify(tmpData));
-      // RNFS.writeFile(pathDataJSON, JSON.stringify(tmpData), 'ascii');
+      RNFS.unlink(pathDataJSON)
+      .then(() => {
+        console.log('FILE DELETED');    
+      })
+      RNFS.writeFile(pathDataJSON, JSON.stringify(tmpData) , 'ascii');
     });
   };
 
@@ -49,7 +59,7 @@ export default function App() {
   const submitHandler = (text) => {    
     if(text.length > 3) {
       setTodos((prevTodos) => {
-          let tmpData = [ { text: text, key: Math.random().toString() } ,...prevTodos ];
+          let tmpData = [ { text: text, key: Math.random().toString(), dateData: {date: new Date().getDate(), month: new Date().getMonth() + 1, year: new Date().getFullYear()}, img: {path: 'empty'} } ,...prevTodos ];
           // console.log(tmpData);
           // const tmp = '[{"text": "buy coffee","key": "1"},{"text": "create an app","key": "2"},{"text": "play on the switch","key": "3"},{"text": "MEGAKOT21","key": "4"}]';          
           RNFS.writeFile(pathDataJSON, JSON.stringify(tmpData) , 'ascii');
@@ -74,7 +84,10 @@ export default function App() {
             <FlatList 
               data={todos}
               renderItem={({ item }) => (
-                <TodoItem item={item} />              
+                <TodoItem 
+                  item={item}
+                  pressHandler={pressHandler}
+                />              
               )}
             />
           </View>

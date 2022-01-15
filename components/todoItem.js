@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity, Text, Modal, View, Button } from 'react-native';
 
-export default function TodoItem({ item }) {
+export default function TodoItem({ item, pressHandler }) {
 
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -11,7 +11,11 @@ export default function TodoItem({ item }) {
       {/* Modal służy do wyświetlania nowego ekranu */}
       <Modal visible={modalOpen}>
         <View style={styles.dataReview}>
-          <Text>{ item.text }</Text>
+          <Text>{ item.text }</Text>          
+          <Button 
+            title='delete'
+            onPress={() => pressHandler(item.key)}
+          />
           <Button 
             title='close'
             onPress={() => setModalOpen(false)}
