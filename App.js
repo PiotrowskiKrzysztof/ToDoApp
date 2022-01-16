@@ -11,12 +11,13 @@ export default function App() {
   const [todos, setTodos] = useState();  
   
   var pathDataJSON = RNFS.DocumentDirectoryPath + '/dataTodos.json'; // sciezka do pliku z JSONem
+  // console.log(pathDataJSON);
 
   // RNFS.unlink(pathDataJSON)
   // .then(() => {
   //   console.log('FILE DELETED');    
   // })
-  // const tmpp = '[{"text": "buy coffee","key": "1", "dateData": {"date": "15", "month": "1", "year": "2022"}, "img": {"path": "empty"}},{"text": "create an app","key": "2", "dateData": {"date": "15", "month": "1", "year": "2022"}, "img": {"path": "empty"}},{"text": "play on the switch","key": "3", "dateData": {"date": "15", "month": "1", "year": "2022"}, "img": {"path": "empty"}},{"text": "MEGAKOT21","key": "4", "dateData": {"date": "15", "month": "1", "year": "2022"}, "img": {"path": "empty"}}]';          
+  // const tmpp = '[{"text": "buy coffee","key": "1", "dateData": {"date": "15", "month": "1", "year": "2022"}, "img": {"path": "null"}},{"text": "create an app","key": "2", "dateData": {"date": "15", "month": "1", "year": "2022"}, "img": {"path": "null"}},{"text": "play on the switch","key": "3", "dateData": {"date": "15", "month": "1", "year": "2022"}, "img": {"path": "null"}},{"text": "MEGAKOT21","key": "4", "dateData": {"date": "15", "month": "1", "year": "2022"}, "img": {"path": "null"}}]';          
   // RNFS.writeFile(pathDataJSON, tmpp , 'ascii');
 
   //funkcja do przechwytywania danych z pliku
@@ -87,6 +88,8 @@ export default function App() {
                 <TodoItem 
                   item={item}
                   pressHandler={pressHandler}
+                  todos={todos}
+                  jsonpath={pathDataJSON}
                 />              
               )}
             />
