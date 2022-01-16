@@ -73,6 +73,22 @@ export default function App() {
     }
   }
 
+  const changeDataImage = (newPath) => {
+    let tmpData = todos;
+    for(let tmp of tmpData) {
+      if(tmp.key == item.key) {
+        tmp.img.path = newPath;
+      }
+    }
+    console.log(JSON.stringify(todos));
+    setTodos(tmpData);
+    RNFS.unlink(pathDataJSON)
+    .then(() => {
+      console.log('FILE DELETED');    
+    })
+    RNFS.writeFile(pathDataJSON, JSON.stringify(tmpData) , 'ascii');
+  };
+
   return (
     <TouchableWithoutFeedback onPress={() => {
       Keyboard.dismiss(); // wyłaczanie klawiatury, po kliknięciu na ekran
@@ -88,8 +104,7 @@ export default function App() {
                 <TodoItem 
                   item={item}
                   pressHandler={pressHandler}
-                  todos={todos}
-                  jsonpath={pathDataJSON}
+                  changeDataImage={changeDataImage}
                 />              
               )}
             />

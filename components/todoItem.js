@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity, Text, Modal, View, Button, Image } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
-import * as RNFS from 'react-native-fs'; // fie system do obsługi pliku json z danymi
 
-export default function TodoItem({ item, pressHandler, todos, jsonpath }) {
+export default function TodoItem({ item, pressHandler, changeDataImage }) {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [statePhoto, setStatePhoto] = useState(item.img.path);
-  const [todos2, setTodos2] = useState(todos);
 
   const handleChosePhoto = async () => {
     ImagePicker.openPicker({
@@ -22,31 +20,8 @@ export default function TodoItem({ item, pressHandler, todos, jsonpath }) {
     
   }
 
-  const changeDataImage = (newPath) => {
-    let tmpData = todos2;
-    // setTodos(prevTodos => {
-    //   let tmpData = prevTodos.filter(todo => todo.key != key);
-      // RNFS.unlink(pathDataJSON)
-      // .then(() => {
-      //   console.log('FILE DELETED');    
-      // })
-      // RNFS.writeFile(pathDataJSON, JSON.stringify(tmpData) , 'ascii');
-    // });
-    for(let tmp of tmpData) {
-      if(tmp.key == item.key) {
-        tmp.img.path = newPath;
-      }
-    }
-    setTodos2(tmpData);
-    console.log(JSON.stringify(todos2));
-  };
-
   const saveAndClose = () => {
-    RNFS.unlink(jsonpath)
-    .then(() => {
-      console.log('FILE DELETED');    
-    })
-    RNFS.writeFile(jsonpath, JSON.stringify(todos2) , 'ascii');
+    
     setModalOpen(false);
   }
 
