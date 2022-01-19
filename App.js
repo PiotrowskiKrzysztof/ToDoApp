@@ -52,10 +52,6 @@ export default function App() {
     });
   };
 
-  const showInfo = () => {
-    
-  }
-
   // funkcja obslugujaca przycisk zatwierdzajacy utworzenie nowego Todo na liscie
   const submitHandler = (text) => {    
     if(text.length > 3) {
@@ -73,7 +69,8 @@ export default function App() {
     }
   }
 
-  const changeDataImage = (newPath) => {
+  // funkcja do dodania zdjęcia
+  const changeDataImage = (newPath, item) => {
     let tmpData = todos;
     for(let tmp of tmpData) {
       if(tmp.key == item.key) {
@@ -86,8 +83,9 @@ export default function App() {
     .then(() => {
       console.log('FILE DELETED');    
     })
-    RNFS.writeFile(pathDataJSON, JSON.stringify(tmpData) , 'ascii');
+    RNFS.writeFile(pathDataJSON, JSON.stringify(todos) , 'ascii');
   };
+
 
   return (
     <TouchableWithoutFeedback onPress={() => {

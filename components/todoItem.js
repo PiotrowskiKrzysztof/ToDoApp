@@ -1,27 +1,48 @@
 import React, { useState } from 'react'
-import { StyleSheet, TouchableOpacity, Text, Modal, View, Button, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, Modal, View, Button, Image, TextInput, Alert } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 
 export default function TodoItem({ item, pressHandler, changeDataImage }) {
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalPhoto, setModalPhoto] = useState(false);
   const [statePhoto, setStatePhoto] = useState(item.img.path);
+  const [text, setText] = useState('');
 
-  const handleChosePhoto = async () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: true
-    }).then(image => {
-      console.log(image.path);
-      setStatePhoto(image.path);
-      changeDataImage(image.path);
-    });
-    
+  const handleChosePhoto = () => {
+
+      ImagePicker.openPicker({
+        width: 300,
+        height: 400,
+        cropping: true
+      }).then(image => {
+        console.log(image.path);
+        setStatePhoto(image.path);
+        changeDataImage(image.path, item);
+        setModalPhoto(false);
+      });
+  
+  }
+  
+  const handleChosePhotoURL = () => {
+    if(text != '') {
+        
+      // https://reactnative.dev/img/tiny_logo.png
+      setStatePhoto(text); 
+      changeDataImage(text, item);
+      setModalPhoto(false);
+    } else {
+      Alert.alert('OOPS!', 'You have to paste URL', [
+        {text: 'Understood'}
+      ])
+    }
   }
 
-  const saveAndClose = () => {
-    
+  const changeHandler = (val) => {
+    setText(val);
+  }
+
+  const saveAndClose = () => {    
     setModalOpen(false);
   }
 
@@ -30,24 +51,51 @@ export default function TodoItem({ item, pressHandler, changeDataImage }) {
       <Text style={styles.item}>{item.text}</Text> 
       {/* Modal służy do wyświetlania nowego ekranu */}
       <Modal visible={modalOpen}>
-        <View style={styles.dataReview}>
-          <Text>{ item.text }</Text>  
-          <TouchableOpacity onPress={() => console.log(statePhoto)}>
-            {statePhoto && <Image source={{uri: statePhoto}} style={{ width: '100%', height: 200 }}/>}
-          </TouchableOpacity>
-          
-          <Button 
-            title='chose photo'
-            onPress={() => handleChosePhoto()}
-          />
-          <Button 
-            title='delete'
-            onPress={() => pressHandler(item.key)}
-          />
-          <Button 
-            title='close'
-            onPress={() => saveAndClose()}
-          />
+        <View style={styles.dataReview}>  
+          {statePhoto && <Image source={{uri: statePhoto}} style={{ width: '100%', height: 200 }}/>}
+          <View>
+            <Text> Created: {item.dateData.date}.{item.dateData.month}.{item.dateData.year} </Text>
+            <Text style={styles.titleToDo}> { item.text } </Text>
+          </View>
+          <Modal visible={modalPhoto}>
+            <View style={styles.containerModal}>
+              <View style={styles.modalSmallSize}>
+                <TextInput
+                    style={styles.input}
+                    placeholder='paste URL if u want add web photo ...'
+                    onChangeText={changeHandler}
+                />
+                <Button 
+                  title='add photo url'
+                  onPress={() => handleChosePhotoURL()}
+                />
+                <Button 
+                  title='add photo gallery'
+                  onPress={() => handleChosePhoto()}
+                />
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalPhoto(false)}
+                >
+                  <Text>X</Text>
+                </TouchableOpacity>
+              </View> 
+            </View>                       
+          </Modal>
+          <View>
+            <Button 
+              title='add photo'
+              onPress={() => setModalPhoto(true)}
+            />
+            <Button 
+              title='delete'
+              onPress={() => pressHandler(item.key)}
+            />
+            <Button 
+              title='close'
+              onPress={() => saveAndClose()}
+            />
+          </View>
         </View>
       </Modal>     
     </TouchableOpacity>
@@ -72,5 +120,44 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between'
+  },
+  input: {
+    marginBottom: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 6, 
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd'
+  },
+  modalSmallSize: {
+    width: 300,
+    height: 350,
+    padding: 15,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
+  containerModal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  closeButton: {
+    position: 'absolute',
+    width: 15,
+    height: 15,
+    top: 0,
+    right: 0,
+    marginRight: 15,
+    marginTop: 15,
+  },
+  titleToDo: {
+    fontSize: 30,
   }
 });
