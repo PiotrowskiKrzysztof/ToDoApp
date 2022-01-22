@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity, Text, Modal, View, Button, Image, TextInput, Alert } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
+import Header from './header'
+import FastImage from 'react-native-fast-image'; // img cache
 
 export default function TodoItem({ item, pressHandler, changeDataImage }) {
 
@@ -51,8 +53,20 @@ export default function TodoItem({ item, pressHandler, changeDataImage }) {
       <Text style={styles.item}>{item.text}</Text> 
       {/* Modal służy do wyświetlania nowego ekranu */}
       <Modal visible={modalOpen}>
-        <View style={styles.dataReview}>  
-          {statePhoto && <Image source={{uri: statePhoto}} style={{ width: '100%', height: 200 }}/>}
+        <Header />
+        <View style={styles.dataReview}>
+          {statePhoto &&
+          <FastImage
+            style={{ width: '100%', height: 200 }}
+            source={{
+                uri: statePhoto,
+                headers: { Authorization: 'someAuthToken' },
+                priority: FastImage.priority.normal,
+            }}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+          }  
+          {/* {statePhoto && <Image source={{uri: statePhoto}} style={{ width: '100%', height: 200 }}/>} */}
           <View>
             <Text> Created: {item.dateData.date}.{item.dateData.month}.{item.dateData.year} </Text>
             <Text style={styles.titleToDo}> { item.text } </Text>
@@ -67,10 +81,12 @@ export default function TodoItem({ item, pressHandler, changeDataImage }) {
                 />
                 <Button 
                   title='add photo url'
+                  color='coral'
                   onPress={() => handleChosePhotoURL()}
                 />
                 <Button 
                   title='add photo gallery'
+                  color='coral'
                   onPress={() => handleChosePhoto()}
                 />
                 <TouchableOpacity
@@ -85,14 +101,17 @@ export default function TodoItem({ item, pressHandler, changeDataImage }) {
           <View>
             <Button 
               title='add photo'
+              color='coral'
               onPress={() => setModalPhoto(true)}
             />
             <Button 
               title='delete'
+              color='coral'
               onPress={() => pressHandler(item.key)}
             />
             <Button 
               title='close'
+              color='coral'
               onPress={() => saveAndClose()}
             />
           </View>
